@@ -65,6 +65,7 @@ class _SalesViewPageState extends State<SalesViewPage> {
       BuildContext context, SalesViewSuccessState state) {
     const style = TextStyle();
     final String doctorName = state.salesViewEntity.data?.doctorName ?? "";
+    final mobileNo = state.salesViewEntity.data?.mobile ?? "";
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo,
@@ -162,8 +163,7 @@ class _SalesViewPageState extends State<SalesViewPage> {
                         subtitleTextStyle:
                             const TextStyle(color: Colors.white, fontSize: 18),
                         title: const Text("Customer"),
-                        subtitle:
-                            Text(state.salesViewEntity.data?.patientName ?? ""),
+                        subtitle: displayTitle(state, mobileNo),
                       ),
                       Visibility(
                         visible: doctorName.isNotEmpty ? true : false,
@@ -417,6 +417,63 @@ class _SalesViewPageState extends State<SalesViewPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget displayTitle(SalesViewSuccessState state, String mobileNo) {
+    final prescriptionTotalLength =
+        state.salesViewEntity.data?.prescriptionImages?.length ?? 0;
+
+    return Row(
+      children: [
+        Text(state.salesViewEntity.data?.patientName ?? ""),
+        const SizedBox(
+          width: 2,
+        ),
+        Visibility(
+          visible: mobileNo.isNotEmpty ? true : false,
+          child: const Icon(
+            Icons.check_circle,
+            color: Colors.blue,
+            size: 18,
+          ),
+        ),
+        const SizedBox(
+          width: 2,
+        ),
+        Visibility(
+          visible: mobileNo.isNotEmpty ? true : false,
+          child: Text(mobileNo),
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Visibility(
+          visible: prescriptionTotalLength != 0 ? true : false,
+          child: GestureDetector(
+            onTap: () {
+              final imagePath = state.salesViewEntity.data?.prescriptionImages
+                      ?.map((e) => e["image"])
+                      .toList()
+                      .elementAt(prescriptionTotalLength - 1)
+                      .toString() ??
+                  "";
+              showPrescriptionImages(imagePath: imagePath);
+            },
+            child: const Badge(
+              isLabelVisible: true,
+              label: Text("1"),
+              largeSize: 16,
+              backgroundColor: Colors.orange,
+              alignment: Alignment.topRight,
+              child: Icon(
+                Icons.upload_file,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -698,5 +755,14 @@ class _SalesViewPageState extends State<SalesViewPage> {
         uploadIconEnabled = true;
       });
     }
+  }
+
+  showPrescriptionImages({required String imagePath}) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            DisplayImagePrescriptionPage(imagePath: imagePath),
+      ),
+    );
   }
 }
