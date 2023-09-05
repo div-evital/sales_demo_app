@@ -1,0 +1,17 @@
+import 'package:evital_sales/cubit/splash/splash_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class SplashCubit extends Cubit<SplashState> {
+  SplashCubit() : super(SplashState.splashState) {
+    _navigationState();
+  }
+
+  Future<void> _navigationState() async {
+    await Future.delayed(
+      const Duration(seconds: 2),
+      () {
+        emit(SplashState.homeState);
+      },
+    );
+  }
+}
