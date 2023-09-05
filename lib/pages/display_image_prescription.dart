@@ -14,7 +14,7 @@ class DisplayImagePrescriptionPage extends StatelessWidget {
         backgroundColor: Colors.indigo,
         automaticallyImplyLeading: false,
         title: const Text(
-          "Upload Prescription images(s)",
+          "Uploaded Prescription images(s)",
           style: TextStyle(fontSize: 18, color: Colors.white),
         ),
         titleSpacing: 0,
@@ -32,9 +32,14 @@ class DisplayImagePrescriptionPage extends StatelessWidget {
         child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.5,
           width: MediaQuery.of(context).size.width,
-          child: Image.file(
-            File(imagePath),
+          child: Image.network(
+            imagePath,
             fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              return loadingProgress == null
+                  ? child
+                  : const Center(child: CircularProgressIndicator());
+            },
           ),
         ),
       ),
