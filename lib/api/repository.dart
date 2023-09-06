@@ -32,7 +32,7 @@ class Repository {
           onResponse: (e, handler) {
             log(e.statusCode.toString(), name: "Status-Code");
             log(e.statusMessage ?? "", name: "Status-Message");
-
+            log(e.data.toString() ?? "", name: "data");
             handler.next(e);
           },
           onError: (e, handler) {
@@ -92,7 +92,8 @@ class Repository {
     return apiResponse;
   }
 
-  Future<SalesViewEntity> sendPostSalesViewRequest({required String orderId}) async {
+  Future<SalesViewEntity> sendPostSalesViewRequest(
+      {required String orderId}) async {
     final apiResponse = await ApiService(_dio, AppStrings.eVitalV3SalesUrl)
         .getSalesViewResponse(AppStrings.setSalesViewPayload(orderId: orderId));
     return apiResponse;

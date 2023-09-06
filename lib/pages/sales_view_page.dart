@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:evital_sales/cubit/sales/sales_view/sales_view_cubit.dart';
@@ -11,6 +10,7 @@ import 'package:evital_sales/utils/custom_date_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../model/view_model/sales_view_entity.dart';
@@ -67,297 +67,131 @@ class _SalesViewPageState extends State<SalesViewPage> {
     final String doctorName = state.salesViewEntity.data?.doctorName ?? "";
     final mobileNo = state.salesViewEntity.data?.mobile ?? "";
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        title: Text(
-          "#${widget.orderNumber}",
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(
-            Icons.arrow_back_outlined,
-            color: Colors.white,
-          ),
-        ),
-        actions: [
-          Container(
-            height: double.infinity,
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: const BorderRadius.all(Radius.circular(5))),
-            margin: const EdgeInsets.only(right: 10, bottom: 5),
-            padding: const EdgeInsets.all(4),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  AppStrings.billDateText,
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                pinned: false,
+                backgroundColor: Colors.indigo,
+                automaticallyImplyLeading: false,
+                titleSpacing: 0,
+                elevation: 0.0,
+                title: Text(
+                  "#${widget.orderNumber}",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      CustomDateGenerate.convertDateIntoName(
-                        date: DateModel.getDateModelList
-                            .elementAt(0)
-                            .startDate
-                            .toString(),
+                leading: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(
+                    Icons.arrow_back_outlined,
+                    color: Colors.white,
+                  ),
+                ),
+                actions: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5),
                       ),
-                      style: const TextStyle(color: Colors.white, fontSize: 15),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    const Icon(
-                      Icons.calendar_today,
-                      color: Colors.white,
-                      size: 12,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: doctorName.isNotEmpty
-                      ? MediaQuery.of(context).size.height * 0.19
-                      : MediaQuery.of(context).size.height * 0.10,
-                  color: Colors.indigo,
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: Container(
-                          height: 46,
-                          width: 46,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue,
-                          ),
-                          child: const Icon(
-                            Icons.person,
-                            color: Colors.white,
+                    margin: const EdgeInsets.only(right: 10),
+                    padding: const EdgeInsets.all(4),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Flexible(
+                          child: Text(
+                            AppStrings.billDateText,
+                            style: TextStyle(color: Colors.grey, fontSize: 12),
                           ),
                         ),
-                        titleTextStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 12),
-                        subtitleTextStyle:
-                            const TextStyle(color: Colors.white, fontSize: 18),
-                        title: const Text("Customer"),
-                        subtitle: displayTitle(state, mobileNo),
-                      ),
-                      Visibility(
-                        visible: doctorName.isNotEmpty ? true : false,
-                        child: ListTile(
-                          leading: Container(
-                            height: 46,
-                            width: 46,
-                            alignment: Alignment.center,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.blue,
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                CustomDateGenerate.convertDateIntoName(
+                                  date: DateModel.getDateModelList
+                                      .elementAt(0)
+                                      .startDate
+                                      .toString(),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                ),
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.medical_information,
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            const Icon(
+                              Icons.calendar_today,
                               color: Colors.white,
+                              size: 12,
                             ),
-                          ),
-                          titleTextStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 12),
-                          subtitleTextStyle: const TextStyle(
-                              color: Colors.white, fontSize: 18),
-                          title: const Text("Doctor"),
-                          subtitle: IntrinsicHeight(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(doctorName),
-                                ),
-                                Visibility(
-                                  visible: uploadIconEnabled,
-                                  child: const VerticalDivider(
-                                    color: Colors.grey,
-                                    thickness: 2,
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: uploadIconEnabled,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      selectedFile != null
-                                          ? uploadPrescription()
-                                          : openImageSelectionOption();
-                                    },
-                                    onDoubleTap: () {
-                                      uploadIconEnabled = false;
-                                      selectedFile = null;
-                                      setState(() {});
-                                    },
-                                    child: Badge(
-                                      isLabelVisible: true,
-                                      label: selectedFile != null
-                                          ? const Text("1")
-                                          : const Icon(
-                                              Icons.upload_outlined,
-                                              size: 12,
-                                              color: Colors.white,
-                                            ),
-                                      largeSize: 16,
-                                      backgroundColor: selectedFile != null
-                                          ? Colors.orange
-                                          : Colors.blue,
-                                      alignment: Alignment.topRight,
-                                      child: const Icon(
-                                        Icons.upload_file,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          ],
                         ),
-                      ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.indigo, width: 0),
+                    color: Colors.indigo,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      customerTitleWidget(state, mobileNo),
+                      const SizedBox(height: 15),
+                      doctorTitleWidget(doctorName: doctorName),
                     ],
                   ),
                 ),
-                displayItemsLength(),
-                Divider(
-                  height: 0,
-                  color: Colors.grey.withOpacity(0.4),
+              ),
+              SliverStickyHeader(
+                header: Container(
+                  height: 40.0,
+                  color: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+                  alignment: Alignment.centerLeft,
+                  child: displayItemsLength(),
                 ),
-                Expanded(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: state.salesViewEntity.data?.items?.length ?? 0,
-                    itemBuilder: (context, index) {
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: 50,
+                    (context, index) {
                       SalesViewDataItems items =
-                          state.salesViewEntity.data?.items!.elementAt(index) ??
+                          state.salesViewEntity.data?.items?.elementAt(0) ??
                               SalesViewDataItems();
                       return displayContents(items, style);
                     },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(
-                      height: 0,
-                    ),
                   ),
                 ),
-                Container(
-                  height: 50,
-                  color: Colors.indigo.shade700,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: ColoredBox(
-                          color: Colors.indigo.shade900,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.print,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              Text(
-                                "Print",
-                                style: style.copyWith(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              uploadIconEnabled = true;
-                            });
-                          },
-                          child: ColoredBox(
-                            color: Colors.blue.shade900,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.edit,
-                                  color: Colors.white,
-                                ),
-                                Text(
-                                  "Edit",
-                                  style: style.copyWith(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  text: "Net Amt. ",
-                                  style: style.copyWith(
-                                      color: Colors.white, fontSize: 12),
-                                  children: [
-                                    TextSpan(
-                                      text: double.parse(state
-                                                  .salesViewEntity.data?.amount
-                                                  .toString() ??
-                                              "")
-                                          .toStringAsFixed(2),
-                                      style: style.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Icon(
-                                Icons.keyboard_arrow_up_sharp,
-                                color: Colors.white,
-                                size: 30,
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(
+              ),
+            ],
+          ),
+          Center(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Visibility(
@@ -413,63 +247,298 @@ class _SalesViewPageState extends State<SalesViewPage> {
                   ),
                 ),
               ],
-            )
-          ],
-        ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 50,
+              color: Colors.indigo.shade700,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ColoredBox(
+                      color: Colors.indigo.shade900,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.print,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          Text(
+                            "Print",
+                            style: style.copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          uploadIconEnabled = true;
+                        });
+                      },
+                      child: ColoredBox(
+                        color: Colors.blue.shade900,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "Edit",
+                              style: style.copyWith(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: "Net Amt. ",
+                              style: style.copyWith(
+                                  color: Colors.white, fontSize: 12),
+                              children: [
+                                TextSpan(
+                                  text: double.parse(state
+                                              .salesViewEntity.data?.amount
+                                              .toString() ??
+                                          "")
+                                      .toStringAsFixed(2),
+                                  style: style.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.keyboard_arrow_up_sharp,
+                            color: Colors.white,
+                            size: 30,
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget displayTitle(SalesViewSuccessState state, String mobileNo) {
-    final prescriptionTotalLength =
-        state.salesViewEntity.data?.prescriptionImages?.length ?? 0;
+  Widget customerTitleWidget(SalesViewSuccessState state, String mobileNo) {
+    return SizedBox(
+      width: double.infinity,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 40,
+            width: 40,
+            margin: const EdgeInsets.only(left: 10),
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue,
+            ),
+            child: const Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Expanded(
+            flex: 5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Customer",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+                displayCustomerDetails(state, mobileNo),
+              ],
+            ),
+          ),
+          displayPrescriptionStatus(state),
+        ],
+      ),
+    );
+  }
 
+  Widget doctorTitleWidget({required String doctorName}) {
+    return SizedBox(
+      width: double.infinity,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 40,
+            width: 40,
+            margin: const EdgeInsets.only(left: 10),
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue,
+            ),
+            child: const Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Doctor",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+                displayDoctorDetails(doctorName: doctorName),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget displayPrescriptionStatus(SalesViewSuccessState state) {
+    final prescriptionLength =
+        state.salesViewEntity.data?.prescriptionImages?.length ?? 0;
+    return prescriptionLength == 0
+        ? const SizedBox()
+        : Flexible(
+            child: Visibility(
+              visible: prescriptionLength != 0 ? true : false,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: SizedBox(
+                      height: 28,
+                      child: VerticalDivider(
+                        thickness: 2,
+                        color: Colors.grey.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: () {
+                        final imagePath = state
+                                .salesViewEntity.data?.prescriptionImages
+                                ?.map((e) => e["image"])
+                                .toList()
+                                .elementAt(prescriptionLength - 1)
+                                .toString() ??
+                            "";
+                        showPrescriptionImages(imagePath: imagePath);
+                      },
+                      child: const Badge(
+                        isLabelVisible: true,
+                        label: Text("1"),
+                        largeSize: 16,
+                        backgroundColor: Colors.orange,
+                        alignment: Alignment.topRight,
+                        child: Icon(
+                          Icons.upload_file,
+                          color: Colors.white,
+                          size: 25,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+  }
+
+  Widget displayCustomerDetails(SalesViewSuccessState state, String mobileNo) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(state.salesViewEntity.data?.patientName ?? ""),
-        const SizedBox(
-          width: 2,
-        ),
-        Visibility(
-          visible: mobileNo.isNotEmpty ? true : false,
-          child: const Icon(
-            Icons.check_circle,
-            color: Colors.blue,
-            size: 18,
+        Flexible(
+          flex: 10,
+          child: Text(
+            state.salesViewEntity.data?.patientName ?? "",
+            maxLines: 1,
+            softWrap: true,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 18, color: Colors.white),
           ),
         ),
         const SizedBox(
           width: 2,
         ),
-        Visibility(
-          visible: mobileNo.isNotEmpty ? true : false,
-          child: Text(mobileNo),
+        Flexible(
+          child: Visibility(
+            visible: mobileNo.isNotEmpty ? true : false,
+            child: const Icon(
+              Icons.check_circle,
+              color: Colors.white,
+              size: 18,
+            ),
+          ),
         ),
         const SizedBox(
-          width: 5,
+          width: 2,
         ),
-        Visibility(
-          visible: prescriptionTotalLength != 0 ? true : false,
-          child: GestureDetector(
-            onTap: () {
-              final imagePath = state.salesViewEntity.data?.prescriptionImages
-                      ?.map((e) => e["image"])
-                      .toList()
-                      .elementAt(prescriptionTotalLength - 1)
-                      .toString() ??
-                  "";
-              showPrescriptionImages(imagePath: imagePath);
-            },
-            child: const Badge(
-              isLabelVisible: true,
-              label: Text("1"),
-              largeSize: 16,
-              backgroundColor: Colors.orange,
-              alignment: Alignment.topRight,
-              child: Icon(
-                Icons.upload_file,
-                color: Colors.white,
-              ),
+        Flexible(
+          flex: 5,
+          child: Visibility(
+            visible: mobileNo.isNotEmpty ? true : false,
+            child: Text(
+              mobileNo,
+              maxLines: 1,
+              softWrap: true,
+              overflow: TextOverflow.visible,
+              style: const TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),
         ),
@@ -477,10 +546,25 @@ class _SalesViewPageState extends State<SalesViewPage> {
     );
   }
 
+  Widget displayDoctorDetails({required String doctorName}) {
+    return Flexible(
+      child: Text(
+        doctorName,
+        maxLines: 1,
+        softWrap: true,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize: 18,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
   Widget displayContents(SalesViewDataItems items, TextStyle style) {
     return Container(
       height: 110,
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: [
           Expanded(
@@ -489,7 +573,7 @@ class _SalesViewPageState extends State<SalesViewPage> {
               children: [
                 Text(
                   items.medicineName ?? "",
-                  style: style.copyWith(color: Colors.indigo, fontSize: 15),
+                  style: style.copyWith(color: Colors.indigo, fontSize: 14),
                 ),
                 Text(
                   items.packSize ?? "",
@@ -657,8 +741,8 @@ class _SalesViewPageState extends State<SalesViewPage> {
 
   Widget displayItemsLength() {
     return Container(
-      height: 20,
-      margin: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
+      // height: 20,
+      // margin: const EdgeInsets.only(top: 5, left: 15, bottom: 5),
       child: BlocSelector<SalesViewCubit, SalesViewState, int>(
         selector: (state) {
           if (state is SalesViewSuccessState) {
@@ -669,7 +753,7 @@ class _SalesViewPageState extends State<SalesViewPage> {
         builder: (context, state) {
           return Text(
             "$state items",
-            style: const TextStyle(color: Colors.blue),
+            style: const TextStyle(color: Colors.blue, fontSize: 12),
           );
         },
       ),
